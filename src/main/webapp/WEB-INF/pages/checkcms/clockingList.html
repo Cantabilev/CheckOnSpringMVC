@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<#include "../common/res.html">
+			<script type="text/javascript" >
+				function updateStatus(id,state) {
+					if(!confirm("确认该操作？")){
+						return;
+					}
+					window.location.href="${s.base}/clocking/updateState.html?id="+id+"&state="+state;
+				}
+			</script>
+	</head>
+
+	<body class="bg">
+		<#include "../common/top.html">
+
+		<div class="content">
+			<div class="block-nav">
+				<#include "../common/nav.html">
+			</div>
+
+			<div class="block-content" >
+
+				<div class="block-content-nav">
+					<span class="title">考勤管理</span>
+				</div>
+
+				<div class="block-content-description">
+					<span>
+						考勤管理
+					</span>
+				</div>
+				<form id="queryPageForm" action=""method="post">
+					<div class="block-content-content" style="margin:  0px 0px 0px 30px;">
+						<table>
+						<tr><td>课程代码：</td><td><input value="${courseCode!}"name="courseCode" type="text"/> </td><td>教师用户：</td><td><input value="${teacherAccount!}" name="teacherAccount"type="text"/></td>
+							</tr>
+							<tr><td></td><td></td>  <td></td> <td></td><td></td><td align='right'><button onclick="resetPageNum()">查询</button>
+						<a href="javascript:location.href='${s.base}/clocking/getPageList.html'">重置查询</a></td></tr>
+							</table>
+					</div>
+				<div class="block-content-content">
+					<table class="fm-table">
+						<thead>
+							<tr>
+								<td>ID</td>
+								<td>教师用户</td>
+								<td>教师姓名</td>
+								<td>课程代码</td>
+								<td>课程名</td>
+								<td>上课时间</td>
+								<td>上课地点</td>
+								<td>上课大节</td>
+								<td>提交时间</td>
+								<td style="width: 180px;">
+									操 作
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+						<#if pagination.items??>
+							<#list pagination.items as row>
+								<#if row_index %2 == 0>
+									<tr style="height:40px;">
+										<#else>
+									<tr style="height:40px;background-color:#f9f9f9;">
+								</#if>
+								<td >${row.id!}</td>
+								<td >${row.teacherAccount!}</td>
+								<td >${row.teacherName!}</td>
+								<td>${row.courseCode!}</td>
+								<td>${row.courseName!}</td>
+								<td>${row.dateStr!}</td>
+								<td>${row.place!}</td>
+								<td>${row.scheduleName!}</td>
+								<td>${row.submitTimeStr!}</td>
+
+								<td>
+									<a href="${s.base}/clockingDtl/getPageList.html?clockingId=${row.id}">查看</a>&nbsp;&nbsp;
+								</td>
+								</tr>
+							</#list>
+						</#if>
+						</tbody>
+					</table>
+					<#include "../common/pagination.html">
+				</div>
+				</form>
+			</div>
+
+			<div class="clearfloat"></div>
+		</div>
+
+			<#include "../common/footer.html">
+	</body>
+
+</html>

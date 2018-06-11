@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cms.mapper.ClockingMapper">
+    <!--引入BaseMapper功能，增删列优先用生成器生成新的文件，若有新的sql语句，请在最后面加入-->
+    <resultMap id="BaseResultMap" type="com.cms.domain.ClockingInfo">
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="teacher_account" property="teacherAccount" jdbcType="VARCHAR" />
+        <result column="course_dtl_id" property="courseDtlId" jdbcType="INTEGER" />
+        <result column="course_code" property="courseCode" jdbcType="INTEGER" />
+        <result column="submit_time" property="submitTime" jdbcType="TIMESTAMP" />
+        <result column="longitude" property="longitude" jdbcType="DOUBLE" />
+        <result column="latitude" property="latitude" jdbcType="DOUBLE" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, teacher_account, course_dtl_id, course_code, submit_time, longitude,latitude
+    </sql>
+
+    <insert id="insert" parameterType="com.cms.domain.ClockingInfo" useGeneratedKeys="true" keyProperty="id" keyColumn="id" >
+        insert into t_clocking
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="teacherAccount != null" >teacher_account,</if>
+            <if test="courseDtlId != null" >course_dtl_id,</if>
+            <if test="courseCode != null" >course_code,</if>
+            <if test="submitTime != null" >submit_time,</if>
+            <if test="longitude != null" >longitude,</if>
+            <if test="latitude != null" >latitude,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="teacherAccount != null" >#{teacherAccount,jdbcType=VARCHAR},</if>
+            <if test="courseDtlId != null" >#{courseDtlId,jdbcType=INTEGER},</if>
+            <if test="courseCode != null" >#{courseCode,jdbcType=INTEGER},</if>
+            <if test="submitTime != null" >#{submitTime,jdbcType=TIMESTAMP},</if>
+            <if test="longitude != null" >#{longitude,jdbcType=DOUBLE},</if>
+            <if test="latitude != null" >#{latitude,jdbcType=DOUBLE},</if>
+        </trim>
+    </insert>
+
+
+    <update id="update" parameterType="com.cms.domain.ClockingInfo" >
+        update t_clocking
+        <set >
+            <if test="teacherAccount != null" > teacher_account = #{teacherAccount,jdbcType=VARCHAR},</if>
+            <if test="courseDtlId != null" > course_dtl_id = #{courseDtlId,jdbcType=INTEGER},</if>
+            <if test="courseCode != null" > course_code = #{courseCode,jdbcType=INTEGER},</if>
+            <if test="submitTime != null" > submit_time = #{submitTime,jdbcType=TIMESTAMP},</if>
+            <if test="longitude != null" > longitude = #{longitude,jdbcType=DOUBLE},</if>
+            <if test="latitude != null" > latitude = #{latitude,jdbcType=DOUBLE},</if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+
+    <select id="list" parameterType="com.core.dao.query.Query" resultMap="BaseResultMap" >
+        select <include refid="Base_Column_List" />  from t_clocking
+        <include refid="whereReference" />
+        <include refid="orderReference" />
+        <include refid="pageReference" />
+    </select>
+
+
+    <select id="findOne" parameterType="com.core.dao.query.Query" resultMap="BaseResultMap" >
+        select <include refid="Base_Column_List" />  from t_clocking
+        <include refid="whereReference" />
+        <include refid="rowLockReference"/>
+    </select>
+
+
+    <select id="count" parameterType="com.core.dao.query.Query" resultType="java.lang.Integer" >
+        select count(*) from t_clocking
+        <include refid="whereReference" />
+    </select>
+
+
+    <sql id="whereReference">
+        <where>
+            <foreach collection="filters" index="filter" item="value">
+                <choose>
+                    <when test="filter.operator == 'in' || filter.operator == 'not in'">
+                        ${filter.calculation} ${filter.column} ${filter.operator}
+                        <foreach collection="value" index="index" item="item" open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+                    <when test="filter.operator == 'between'">
+                        ${filter.calculation} ${filter.column} ${filter.operator} #{value.left} and #{value.right}
+                    </when>
+                    <when test="filter.calculation == 'or'">
+                        <include refid="orFilter"/>
+                    </when>
+                    <otherwise>
+                        ${filter.calculation} ${filter.column} ${filter.operator} #{value}
+                    </otherwise>
+                </choose>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="orFilter">
+        ${filter.calculation}
+        <foreach collection="value" index="subFilter" item="subValue" open="(" separator="and" close=")">
+            <choose>
+                <when test="subFilter.operator == 'in' || subFilter.operator == 'not in'">
+                    ${subFilter.column} ${subFilter.operator}
+                    <foreach collection="subValue" index="subIndex" item="subItem" open="(" separator="," close=")">
+                        #{subItem}
+                    </foreach>
+                </when>
+                <otherwise>
+                    ${subFilter.column} ${subFilter.operator} #{subValue}
+                </otherwise>
+            </choose>
+        </foreach>
+    </sql>
+
+    <sql id="orderReference">
+        <if test="orders != null and orders.size > 0">
+            order by
+            <foreach collection="orders" index="order" item="value" separator="," >
+                ${order.column} ${order.direction}
+            </foreach>
+        </if>
+    </sql>
+
+    <sql id="pageReference">
+        <if test="pageParam != null">
+            limit #{pageParam.start},#{pageParam.limit}
+        </if>
+    </sql>
+
+    <sql id="rowLockReference">
+        <if test="rowLock != null and rowLock == true">
+            for update
+        </if>
+    </sql>
+    <!--引入BaseMapper功能，若有新的sql语句，请在这里开始加入-->
+
+    <!--TODO 一步操作 根据courseCode查询每一节课的签到人数，迟到人数，未签到人数 -->
+    <resultMap id="BaseResultMapClockingDtlVO" type="com.cms.dto.ClockingDTO">
+        <result column="id" property="id" jdbcType="INTEGER" />
+        <result column="course_dtl_id" property="courseDtlId" jdbcType="INTEGER" />
+        <result column="course_code" property="courseCode" jdbcType="INTEGER" />
+        <result column="date" property="date" jdbcType="DATE" />
+        <result column="place" property="place" jdbcType="VARCHAR" />
+        <result column="schedule_name" property="scheduleName" jdbcType="INTEGER" />
+
+        <result column="teacher_account" property="teacherAccount" jdbcType="VARCHAR" />
+        <result column="teacher_name" property="teacherName" jdbcType="VARCHAR" />
+        <result column="course_id" property="courseId" jdbcType="INTEGER" />
+        <result column="course_name" property="courseName" jdbcType="VARCHAR" />
+
+        <result column="submit_time" property="submitTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <select id="getClockingDtlByCourseCode" resultMap="BaseResultMapClockingDtlVO" parameterType="java.lang.Long" >
+        select t_clocking.id, t_clocking.course_dtl_id, t_clocking.course_code, t_course_dtl.date, t_course_dtl.place,
+        t_course_dtl.schedule_name, t_clocking.teacher_account, t_teacher.name as teacher_name, t_course.id AS course_id,
+        t_course.name AS course_name, t_clocking.submit_time
+        from t_clocking, t_teacher, t_course_dtl, t_course
+        where t_clocking.course_code = #{courseCode}
+          AND t_clocking.teacher_account = t_teacher.account
+          AND t_clocking.course_dtl_id = t_course_dtl.id
+          AND t_course.id = t_course_dtl.course_id
+    </select>
+
+    <select id="listClockingVO" parameterType="com.core.dao.query.Query" resultMap="BaseResultMapClockingDtlVO" >
+        select t_clocking.id, t_clocking.course_dtl_id, t_clocking.course_code, t_course_dtl.date, t_course_dtl.place,
+        t_course_dtl.schedule_name, t_clocking.teacher_account, t_teacher.name as teacher_name, t_course.id AS course_id,
+        t_course.name AS course_name, t_clocking.submit_time
+        from t_clocking, t_teacher, t_course_dtl, t_course
+        <include refid="whereReferenceVO" />
+        <include refid="orderReference" />
+        <include refid="pageReference" />
+    </select>
+
+    <select id="countClockingVO" parameterType="com.core.dao.query.Query" resultType="java.lang.Integer" >
+        select count(*)
+        from t_clocking, t_teacher, t_course_dtl, t_course
+        <include refid="whereReferenceVO" />
+    </select>
+
+    <sql id="whereReferenceVO">
+        <where>
+            t_clocking.teacher_account = t_teacher.account
+            AND t_clocking.course_dtl_id = t_course_dtl.id
+            AND t_course.id = t_course_dtl.course_id
+            <foreach collection="filters" index="filter" item="value">
+                <choose>
+                    <when test="filter.operator == 'in' || filter.operator == 'not in'">
+                        ${filter.calculation} ${filter.column} ${filter.operator}
+                        <foreach collection="value" index="index" item="item" open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+                    <when test="filter.operator == 'between'">
+                        ${filter.calculation} ${filter.column} ${filter.operator} #{value.left} and #{value.right}
+                    </when>
+                    <when test="filter.calculation == 'or'">
+                        <include refid="orFilter"/>
+                    </when>
+                    <otherwise>
+                        ${filter.calculation} ${filter.column} ${filter.operator} #{value}
+                    </otherwise>
+                </choose>
+            </foreach>
+        </where>
+    </sql>
+
+    <!--<select id="getNormalCount" resultMap="java.lang.Integer" parameterType="java.lang.Long" >-->
+        <!--select COUNT(*)-->
+        <!--from t_clocking_dtl-->
+        <!--where course_code = #{courseCode} AND state = 0 -->
+    <!--</select>-->
+    <!--<select id="getLateCount" resultMap="java.lang.Integer" parameterType="java.lang.Long" >-->
+        <!--select COUNT(*)-->
+        <!--from t_clocking_dtl-->
+        <!--where course_code = #{courseCode} AND state = 1 GROUP BY course_dtl_id-->
+    <!--</select>-->
+    <!--<select id="getDefaultCount" resultMap="java.lang.Integer" parameterType="java.lang.Long" >-->
+        <!--select COUNT(*)-->
+        <!--from t_clocking_dtl-->
+        <!--where course_code = #{courseCode} AND state = 2 GROUP BY course_dtl_id-->
+    <!--</select>-->
+</mapper>

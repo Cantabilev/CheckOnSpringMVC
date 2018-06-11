@@ -1,0 +1,23 @@
+<div style="position:fixed;top: 1%;right: 5%">
+    <a onclick="logout()">退出</a>
+</div>
+<script type="text/javascript">
+    function logout() {
+        $.ajax({
+            url: "${s.base}/adminInfo/logout.html",
+            type: "POST",
+            data: {
+
+            },
+            success: function (data) {
+                var json = eval('(' + data + ')');
+                if(json.code==0){
+                    location.href="${s.base}/index.html"
+                }
+            },
+            error: function () {
+            }
+        })
+    }
+
+</script>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cms.mapper.CourseCodeMapper">
+    <!--引入BaseMapper功能，增删列优先用生成器生成新的文件，若有新的sql语句，请在最后面加入-->
+    <resultMap id="BaseResultMap" type="com.cms.domain.CourseCodeInfo">
+        <id column="course_code" property="courseCode" jdbcType="INTEGER" />
+        <result column="teacher_account" property="teacherAccount" jdbcType="VARCHAR" />
+        <result column="teacher_name" property="teacherName" jdbcType="VARCHAR" />
+        <result column="course_id" property="courseId" jdbcType="INTEGER" />
+        <result column="course_name" property="courseName" jdbcType="VARCHAR" />
+        <result column="grade_id" property="gradeId" jdbcType="INTEGER" />
+        <result column="specialty_id" property="specialtyId" jdbcType="INTEGER" />
+        <result column="class_id" property="classIds" jdbcType="VARCHAR" />
+        <result column="exports" property="exports" jdbcType="VARCHAR" />
+        <result column="contains" property="contains" jdbcType="VARCHAR" />
+        <result column="academic_year_id" property="academicYearId" jdbcType="INTEGER" />
+        <result column="academic_year_name" property="academicYearName" jdbcType="VARCHAR" />
+        <result column="semester" property="semester" jdbcType="VARCHAR" />
+        <result column="state" property="state" jdbcType="SMALLINT" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        course_code, teacher_account, teacher_name, course_id, course_name, grade_id, specialty_id, class_id, exports, contains, academic_year_id, academic_year_name, semester, state
+    </sql>
+
+    <insert id="insert" parameterType="com.cms.domain.CourseCodeInfo" useGeneratedKeys="true" keyProperty="id" >
+        insert into t_course_code
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="teacherAccount != null" > teacher_account, </if>
+            <if test="teacherName != null" > teacher_name, </if>
+            <if test="courseId != null" > course_id, </if>
+            <if test="courseName != null" > course_name, </if>
+            <if test="gradeId != null" > grade_id, </if>
+            <if test="specialtyId != null" > specialty_id,</if>
+            <if test="classIds != null" > class_id, </if>
+            <if test="exports != null" > exports, </if>
+            <if test="contains != null" > contains, </if>
+            <if test="academicYearId != null" > academic_year_id, </if>
+            <if test="academicYearName != null" > academic_year_name, </if>
+            <if test="semester != null" > semester, </if>
+            <if test="state != null" > state, </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="teacherAccount != null" > #{teacherAccount,jdbcType=VARCHAR}, </if>
+            <if test="teacherName != null" > #{teacherName,jdbcType=VARCHAR}, </if>
+            <if test="courseId != null" > #{courseId,jdbcType=INTEGER}, </if>
+            <if test="courseName != null" > #{courseName,jdbcType=VARCHAR}, </if>
+            <if test="gradeId != null" > #{gradeId,jdbcType=INTEGER}, </if>
+            <if test="specialtyId != null" > #{specialtyId,jdbcType=INTEGER}, </if>
+            <if test="classIds != null" > #{classIds,jdbcType=VARCHAR}, </if>
+            <if test="exports != null" > #{exports,jdbcType=VARCHAR}, </if>
+            <if test="contains != null" > #{contains,jdbcType=VARCHAR}, </if>
+            <if test="academicYearId != null" > #{academicYearId,jdbcType=INTEGER}, </if>
+            <if test="academicYearName != null" > #{academicYearName,jdbcType=VARCHAR}, </if>
+            <if test="semester != null" > #{semester,jdbcType=VARCHAR}, </if>
+            <if test="state != null" > #{state,jdbcType=SMALLINT},</if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.cms.domain.CourseCodeInfo" >
+        update t_course_code
+        <set >
+            <if test="teacherAccount != null" > teacher_account = #{teacherAccount,jdbcType=VARCHAR}, </if>
+            <if test="teacherName != null" > teacher_name = #{teacherAccount,jdbcType=VARCHAR}, </if>
+            <if test="courseId != null" > course_id = #{courseId,jdbcType=INTEGER}, </if>
+            <if test="courseName != null" > course_name = #{courseName,jdbcType=VARCHAR}, </if>
+            <if test="gradeId != null" > grade_id = #{gradeId,jdbcType=INTEGER}, </if>
+            <if test="specialtyId != null" > specialty_id =  #{specialtyId,jdbcType=INTEGER}, </if>
+            <if test="classIds != null" > class_id = #{classIds,jdbcType=VARCHAR}, </if>
+            <if test="exports != null" > exports = #{exports,jdbcType=VARCHAR}, </if>
+            <if test="contains != null" > contains = #{contains,jdbcType=VARCHAR}, </if>
+            <if test="academicYearId != null"> academic_year_id = #{academicYearId,jdbcType=INTEGER}, </if>
+            <if test="academicYearName != null"> academic_year_name = #{academicYearName,jdbcType=VARCHAR}, </if>
+            <if test="semester != null" > semester = #{semester,jdbcType=VARCHAR}, </if>
+            <if test="state != null" > state = #{state,jdbcType=SMALLINT}, </if>
+        </set>
+        where course_code = #{courseCode,jdbcType=INTEGER}
+    </update>
+
+    <select id="list" parameterType="com.core.dao.query.Query" resultMap="BaseResultMap" >
+        select <include refid="Base_Column_List" />  from t_course_code
+        <include refid="whereReference" />
+        <include refid="orderReference" />
+        <include refid="pageReference" />
+    </select>
+
+
+    <select id="findOne" parameterType="com.core.dao.query.Query" resultMap="BaseResultMap" >
+        select <include refid="Base_Column_List" />  from t_course_code
+        <include refid="whereReference" />
+        LIMIT 1
+        <include refid="rowLockReference"/>
+    </select>
+
+
+    <select id="count" parameterType="com.core.dao.query.Query" resultType="java.lang.Integer" >
+        select count(*) from t_course_code
+        <include refid="whereReference" />
+    </select>
+
+
+    <sql id="whereReference">
+        <where>
+            <foreach collection="filters" index="filter" item="value">
+                <choose>
+                    <when test="filter.operator == 'in' || filter.operator == 'not in'">
+                        ${filter.calculation} ${filter.column} ${filter.operator}
+                        <foreach collection="value" index="index" item="item" open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+                    <when test="filter.operator == 'between'">
+                        ${filter.calculation} ${filter.column} ${filter.operator} #{value.left} and #{value.right}
+                    </when>
+                    <when test="filter.calculation == 'or'">
+                        <include refid="orFilter"/>
+                    </when>
+                    <otherwise>
+                        ${filter.calculation} ${filter.column} ${filter.operator} #{value}
+                    </otherwise>
+                </choose>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="orFilter">
+        ${filter.calculation}
+        <foreach collection="value" index="subFilter" item="subValue" open="(" separator="and" close=")">
+            <choose>
+                <when test="subFilter.operator == 'in' || subFilter.operator == 'not in'">
+                    ${subFilter.column} ${subFilter.operator}
+                    <foreach collection="subValue" index="subIndex" item="subItem" open="(" separator="," close=")">
+                        #{subItem}
+                    </foreach>
+                </when>
+                <otherwise>
+                    ${subFilter.column} ${subFilter.operator} #{subValue}
+                </otherwise>
+            </choose>
+        </foreach>
+    </sql>
+
+    <sql id="orderReference">
+        <if test="orders != null and orders.size > 0">
+            order by
+            <foreach collection="orders" index="order" item="value" separator="," >
+                ${order.column} ${order.direction}
+            </foreach>
+        </if>
+    </sql>
+
+    <sql id="pageReference">
+        <if test="pageParam != null">
+            limit #{pageParam.start},#{pageParam.limit}
+        </if>
+    </sql>
+
+    <sql id="rowLockReference">
+        <if test="rowLock != null and rowLock == true">
+            for update
+        </if>
+    </sql>
+    <!--引入BaseMapper功能，若有新的sql语句，请在这里开始加入-->
+
+    <update id="updateAllStudent" >
+        update t_course_code
+        <trim suffixOverrides=",">
+            <set>
+                <if test="contains != null" >
+                    contains = #{contains,jdbcType=VARCHAR},
+                </if>
+                <if test="exports != null" >
+                    exports = #{exports,jdbcType=VARCHAR},
+                </if>
+            </set>
+        </trim>
+        where course_code = #{courseCode,jdbcType=INTEGER}
+    </update>
+</mapper>

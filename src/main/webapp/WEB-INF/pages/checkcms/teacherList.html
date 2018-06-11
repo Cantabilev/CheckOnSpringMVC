@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<#include "../common/res.html">
+			<script type="text/javascript" >
+//				var academyList = null;
+//				$(function () {
+//                    $.ajax({
+//                        url: "${s.base}/academy/getAllAcademy.do",
+//                        type: "GET",
+//                        async:false,
+//                        success: function (data) {
+//                            var json = eval('(' + data + ')');
+//                            if(json.code==0){
+//                                academyList = json.data;
+//                            }else{
+//                                showError($(".error_msg"), json.msg, 2000);
+//                            }
+//                        },
+//                        error: function () {
+//                            showError($(".error_msg"), "服务器错误", 2000);
+//                        }
+//                    })
+//                })
+				function updateStatus(id,state) {
+					if(!confirm("确认该操作？")){
+						return;
+					}
+					window.location.href="${s.base}/teacher/updateState.html?id="+id+"&state="+state;
+				}
+			</script>
+	</head>
+
+	<body class="bg">
+		<#include "../common/top.html">
+
+		<div class="content">
+			<div class="block-nav">
+				<#include "../common/nav.html">
+			</div>
+
+			<div class="block-content" >
+
+				<div class="block-content-nav">
+					<span class="title">教师管理</span>
+				</div>
+
+				<div class="block-content-description">
+					<span>
+						教师管理
+					</span>
+				</div>
+				<form id="queryPageForm" action=""method="post">
+					<div class="block-content-content" style="margin:  0px 0px 0px 30px;">
+						<table>
+						<tr><td>姓名：</td><td><input value="${name!}"name="name" type="text"/> </td><td>用户：</td><td><input value="${account!}" name="account"type="text"/></td>
+							<td>所属学院：</td><td><select name="academyId">
+                            <option value=""  >所有</option>
+								<#if academyList??>
+                                    <#list academyList as row>
+                                        <option value="${row.id!}" <#if academyId??&&academyId == row.id>selected="selected" </#if>>${row.name!}</option>
+                                    </#list>
+								</#if>
+						</select></td></tr>
+							<tr><td>在职状态：</td><td><select name="state">
+							<!-- 这里状态是反的，因为后台查询是not equal -->
+							<option value=""  >所有</option>
+							<option value="0" <#if state??&&state ==0>selected="selected" </#if>>在职</option>
+							<option value="1" <#if state??&&state ==1>selected="selected" </#if>>已离职</option>
+						</select></td></tr>
+							<tr><td></td><td></td>  <td></td> <td></td><td></td><td align='right'><button onclick="resetPageNum()">查询</button>
+						<a href="javascript:location.href='${s.base}/teacher/getPageList.html'">重置查询</a></td></tr>
+							</table>
+					</div>
+				<div class="block-content-content">
+					<table class="fm-table">
+						<thead>
+							<tr>
+								<td>ID</td>
+								<td>用户</td>
+								<td>姓名</td>
+								<td>性别</td>
+								<td>所属学院</td>
+								<td>状态</td>
+								<td style="width: 250px;">
+										<input onclick="window.location.href='${s.base}/teacher/toMerge.html'" class="btn" type="button" value="添 加"/>
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+						<#if pagination.items??>
+							<#list pagination.items as row>
+								<#if row_index %2 == 0>
+									<tr style="height:40px;">
+										<#else>
+									<tr style="height:40px;background-color:#f9f9f9;">
+								</#if>
+								<td >
+									${row.id!}
+								</td>
+								<td >
+									${row.account!}
+								</td>
+								<td >
+									${row.name!}
+								</td>
+								<td>
+									<#if row.gender  == 0>
+										男
+										<#elseif row.gender == 1>
+											女
+											<#else>
+												未知
+									</#if>
+								</td>
+								<td>${row.academyName!}</td>
+								<td>
+									<#if row.state  == 0>
+										正常
+										<#elseif row.state == 1>
+											封禁
+											<#else>
+												未知状态
+									</#if>
+								</td>
+								<td>
+									<a href="${s.base}/teacher/toMerge.html?id=${row.id}">修改</a>&nbsp;&nbsp;
+									<#if row.state  == 0>
+											<a onclick="updateStatus(${row.id},1)">封禁</a>&nbsp;&nbsp;
+											<#else>
+												<a onclick="updateStatus(${row.id},0)">解封</a>&nbsp;&nbsp;
+									</#if>
+								</td>
+								</tr>
+							</#list>
+						</#if>
+						</tbody>
+					</table>
+					<#include "../common/pagination.html">
+				</div>
+				</form>
+			</div>
+
+			<div class="clearfloat"></div>
+		</div>
+
+		<#include "../common/footer.html">
+	</body>
+
+</html>

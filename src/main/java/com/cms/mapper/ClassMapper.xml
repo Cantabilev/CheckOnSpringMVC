@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cms.mapper.ClassMapper">
+    <!--引入BaseMapper功能，增删列优先用生成器生成新的文件，若有新的sql语句，请在最后面加入-->
+    <resultMap id="BaseResultMap" type="com.cms.domain.ClassInfo">
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="grade_id" property="gradeId" jdbcType="INTEGER" />
+        <result column="specialty_id" property="specialtyId" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="class_code" property="classCode" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, grade_id, specialty_id, name, class_code
+    </sql>
+
+    <insert id="insert" parameterType="com.cms.domain.ClassInfo" useGeneratedKeys="true" keyProperty="id" >
+        insert into t_class
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="gradeId != null" > grade_id, </if>
+            <if test="specialtyId != null" > specialty_id, </if>
+            <if test="name != null" > name, </if>
+            <if test="classCode != null" > class_code, </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="gradeId != null" > #{gradeId, jdbcType=INTEGER}, </if>
+            <if test="specialtyId != null" > #{specialtyId, jdbcType=INTEGER}, </if>
+            <if test="name != null" > #{name, jdbcType=VARCHAR}, </if>
+            <if test="classCode != null" > #{classCode, jdbcType=VARCHAR}, </if>
+        </trim>
+    </insert>
+
+
+    <update id="update" parameterType="com.cms.domain.ClassInfo" >
+        update t_class
+        <set >
+            <trim suffixOverrides=",">
+                <if test="gradeId != null">grade_id = #{gradeId, jdbcType=INTEGER},</if>
+                <if test="specialtyId != null">specialty_id = #{specialtyId, jdbcType=INTEGER},</if>
+                <if test="name != null">name = #{name, jdbcType=VARCHAR},</if>
+                <if test="classCode != null">class_code = #{classCode, jdbcType=VARCHAR},</if>
+            </trim>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+
+    <select id="list" parameterType="com.core.dao.query.Query" resultMap="BaseResultMap" >
+        select <include refid="Base_Column_List" />  from t_class
+        <include refid="whereReference" />
+        <include refid="orderReference" />
+        <include refid="pageReference" />
+    </select>
+
+
+    <select id="findOne" parameterType="com.core.dao.query.Query" resultMap="BaseResultMap" >
+        select <include refid="Base_Column_List" />  from t_class
+        <include refid="whereReference" />
+        <include refid="rowLockReference"/>
+    </select>
+
+
+    <select id="count" parameterType="com.core.dao.query.Query" resultType="java.lang.Integer" >
+        select count(*) from t_class
+        <include refid="whereReference" />
+    </select>
+
+
+    <sql id="whereReference">
+        <where>
+            <foreach collection="filters" index="filter" item="value">
+                <choose>
+                    <when test="filter.operator == 'in' || filter.operator == 'not in'">
+                        ${filter.calculation} ${filter.column} ${filter.operator}
+                        <foreach collection="value" index="index" item="item" open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+                    <when test="filter.operator == 'between'">
+                        ${filter.calculation} ${filter.column} ${filter.operator} #{value.left} and #{value.right}
+                    </when>
+                    <when test="filter.calculation == 'or'">
+                        <include refid="orFilter"/>
+                    </when>
+                    <otherwise>
+                        ${filter.calculation} ${filter.column} ${filter.operator} #{value}
+                    </otherwise>
+                </choose>
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="orFilter">
+        ${filter.calculation}
+        <foreach collection="value" index="subFilter" item="subValue" open="(" separator="and" close=")">
+            <choose>
+                <when test="subFilter.operator == 'in' || subFilter.operator == 'not in'">
+                    ${subFilter.column} ${subFilter.operator}
+                    <foreach collection="subValue" index="subIndex" item="subItem" open="(" separator="," close=")">
+                        #{subItem}
+                    </foreach>
+                </when>
+                <otherwise>
+                    ${subFilter.column} ${subFilter.operator} #{subValue}
+                </otherwise>
+            </choose>
+        </foreach>
+    </sql>
+
+    <sql id="orderReference">
+        <if test="orders != null and orders.size > 0">
+            order by
+            <foreach collection="orders" index="order" item="value" separator="," >
+                ${order.column} ${order.direction}
+            </foreach>
+        </if>
+    </sql>
+
+    <sql id="pageReference">
+        <if test="pageParam != null">
+            limit #{pageParam.start},#{pageParam.limit}
+        </if>
+    </sql>
+
+    <sql id="rowLockReference">
+        <if test="rowLock != null and rowLock == true">
+            for update
+        </if>
+    </sql>
+    <!--引入BaseMapper功能，若有新的sql语句，请在这里开始加入-->
+
+    <resultMap id="BaseResultMapVO" type="com.cms.vo.ClassVO" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="grade_id" property="gradeId" jdbcType="INTEGER" />
+        <result column="specialty_id" property="specialtyId" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="class_code" property="classCode" jdbcType="VARCHAR" />
+
+        <result column="specialty_code" property="specialtyCode" jdbcType="VARCHAR" />
+        <result column="specialty_name" property="specialtyName" jdbcType="VARCHAR" />
+        <result column="academy_id" property="academyId" jdbcType="INTEGER" />
+        <result column="academy_name" property="academyName" jdbcType="VARCHAR" />
+    </resultMap>
+
+
+    <sql id="Base_Column_List_VO" >
+        t_class.*, t_specialty.name AS specialty_name, t_specialty.specialty_code AS specialty_code, t_academy.id AS academy_id, t_academy.name AS academy_name
+    </sql>
+    <select id="listVO" parameterType="com.core.dao.query.Query" resultMap="BaseResultMapVO" >
+        select <include refid="Base_Column_List_VO" />  from t_class,t_specialty,t_academy
+        <include refid="whereReferenceVO" />
+        <include refid="orderReference" />
+        <include refid="pageReference" />
+    </select>
+    <select id="countVO" parameterType="com.core.dao.query.Query" resultType="java.lang.Integer" >
+        select count(*) from t_class,t_academy,t_specialty
+        <include refid="whereReferenceVO" />
+    </select>
+    <sql id="whereReferenceVO">
+        <where>
+            t_class.specialty_id = t_specialty.id AND t_specialty.academy_id = t_academy.id
+            <foreach collection="filters" index="filter" item="value">
+                <choose>
+                    <when test="filter.operator == 'in' || filter.operator == 'not in'">
+                        ${filter.calculation} ${filter.column} ${filter.operator}
+                        <foreach collection="value" index="index" item="item" open="(" separator="," close=")">
+                            #{item}
+                        </foreach>
+                    </when>
+                    <when test="filter.operator == 'between'">
+                        ${filter.calculation} ${filter.column} ${filter.operator} #{value.left} and #{value.right}
+                    </when>
+                    <when test="filter.calculation == 'or'">
+                        <include refid="orFilter"/>
+                    </when>
+                    <otherwise>
+                        ${filter.calculation} ${filter.column} ${filter.operator} #{value}
+                    </otherwise>
+                </choose>
+            </foreach>
+        </where>
+    </sql>
+</mapper>

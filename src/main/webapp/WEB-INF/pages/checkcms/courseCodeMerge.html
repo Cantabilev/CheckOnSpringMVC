@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<#include "../common/res.html">
+		<script type="text/javascript" >
+
+            function check() {
+                var teacherAccount=document.getElementById("teacherAccount");
+                var courseId=document.getElementById("courseId");
+                var gradeId=document.getElementById("gradeId");
+                var specialtyId=document.getElementById("specialtyId");
+                var classIds=document.getElementById("classIds");
+                var academicYearId=document.getElementById("academicYearId");
+
+                if (teacherAccount.value == "") {
+                    alert("教师不符规则");
+                    return false;
+                }
+                if (courseId.value == "" ) {
+                    alert("课程不符规则");
+                    return false;
+                }
+                if (gradeId.value == "") {
+                    alert("年级不符规则");
+                    return false;
+                }
+                if (specialtyId.value == "") {
+                    alert("专业不符规则");
+                    return false;
+                }
+                if (classIds.value == "") {
+                    alert("班级不符规则");
+                    return false;
+                }
+                if (academicYearId.value == "") {
+                    alert("学期不符规则");
+                    return false;
+                }
+
+                return true;
+            }
+
+            function editClass(action) {
+                var courseCode=document.getElementById("courseCode");
+                var classIds=document.getElementById("classIds");
+                if (null == courseCode || courseCode.value == ""){
+                    alert("初次添加课程只允许选择一个班级");
+                    return ;
+				}
+                if(classIds.value == ""){
+                    alert("班级不能为空");
+                    return ;
+                }
+                var url="updateClass.html?action="+action+"&courseCode="+courseCode+"&classIds="+classIds;
+
+                location.href=url;
+            }
+            function editStudentExports(action) {
+                var courseCode=document.getElementById("courseCode");
+                var exportStudent=document.getElementById("exportStudent");
+                if (null == courseCode || courseCode.value == ""){
+                    alert("初次添加课程不允许操作限制");
+                    return ;
+                }
+                if(exportStudent.value == ""){
+                    alert("学生不能为空");
+                    return ;
+                }
+                var url="updateExportStudent.html?action="+action+"&courseCode="+courseCode+"&exportStudent="+exportStudent;
+
+                location.href=url;
+            }
+            function editStudentContains(action) {
+                var courseCode=document.getElementById("courseCode");
+                var containsStudent=document.getElementById("containsStudent");
+                if (null == courseCode || courseCode.value == ""){
+                    alert("初次添加课程不允许操作限制");
+                    return ;
+                }
+                if(containsStudent.value == ""){
+                    alert("学生不能为空");
+                    return ;
+                }
+                var url="updateContainsStudent.html?action="+action+"&courseCode="+courseCode+"&containsStudent="+containsStudent;
+
+                location.href=url;
+            }
+		</script>
+	</head>
+
+	<body class="bg">
+
+		<div class="content">
+			<div class="block-nav">
+				<#include "../common/nav.html">
+			</div>
+			<div class="block-content" >
+
+				<div class="block-content-nav">
+					<span class="title">课程代码 添加/修改</span>
+				</div>
+
+				<div class="block-content-description">
+					<span>
+						课程代码编辑
+					</span>
+				</div>
+				<div class="block-content-content">
+					<form class="fm-form" onsubmit="return check();" action="${s.base}/courseCode/doMerge.html" method="post" enctype="multipart/form-data">
+						<ul id="teacherUl">
+							<li>
+								<label>课程代码 </label>
+								<input id="courseCode" name="courseCode" type="text" value="${entity.courseCode!}" readonly="readonly"/>
+							</li>
+							<li>
+								<label>教师用户 </label>
+								<select id="teacherAccount" name="teacherAccount">
+									<option value=""  >--&nbsp;教师&nbsp;--</option>
+									<#if teacherList??>
+										<#list teacherList as row>
+											<option value="${row.account!}" <#if entity.teacherAccount??&&entity.teacherAccount == row.account>selected="selected" </#if>>${row.account!} - ${row.name!}</option>
+										</#list>
+									</#if>
+								</select>
+							</li>
+							<li>
+								<label>上课学年 </label>
+								<select id="academicYearId" name="academicYearId">
+									<option value=""  >--&nbsp;学年&nbsp;--</option>
+									<#if academicYearList??>
+										<#list academicYearList as row>
+											<option value="${row.id!}" <#if entity.academicYearId??&&entity.academicYearId == row.id>selected="selected" </#if>>${row.name!}</option>
+										</#list>
+									</#if>
+								</select>
+							</li>
+							<li>
+								<label>上课学期 </label>
+								<select name="semester">
+									<option value ="一" <#if entity.semester?? && entity.semester == '一'>  selected = "selected" </#if> >一</option>
+									<option value ="二" <#if entity.semester?? &&entity.semester == '二'>  selected = "selected" </#if>>二</option>
+								</select>
+							</li>
+							<li>
+								<label>所属课程 </label>
+								<select id="courseId" name="courseId">
+									<option value=""  >--&nbsp;课程&nbsp;--</option>
+									<#if courseList??>
+										<#list courseList as row>
+											<option value="${row.id!}" <#if entity.courseId??&&entity.courseId == row.id>selected="selected" </#if>>${row.name!}</option>
+										</#list>
+									</#if>
+								</select>
+							</li>
+							<li>
+								<label>上课年级 </label>
+								<select id="gradeId" name="gradeId">
+									<option value=""  >--&nbsp;年级&nbsp;--</option>
+									<#if gradeList??>
+										<#list gradeList as row>
+											<option value="${row.id!}" <#if entity.gradeId??&&entity.gradeId == row.id>selected="selected" </#if>>${row.name!}</option>
+										</#list>
+									</#if>
+								</select>
+							</li>
+							<li>
+								<label>上课专业 </label>
+								<select id="specialtyId" name="specialtyId">
+									<option value=""  >--&nbsp;专业&nbsp;--</option>
+									<#if specialtyList??>
+										<#list specialtyList as row>
+											<option value="${row.id!}" <#if entity.specialtyId??&&entity.specialtyId == row.id>selected="selected" </#if>>${row.name!}</option>
+										</#list>
+									</#if>
+								</select>
+							</li>
+							<li>
+								<label>上课班级 </label>
+								<select id="classIds" name="classIds">
+									<option value="" selected="selected" >--&nbsp;班级&nbsp;--</option>
+									<#if classList??>
+										<#list classList as row>
+											<option value="${row.id!}">${row.gradeId!}&nbsp;-&nbsp;${row.classCode!}</option>
+										</#list>
+									</#if>
+								</select>
+								<input type="button" value="增加" onclick="editClass(0)" />
+								<input type="button" value="删除" onclick="editClass(1)" />
+								<span STYLE="color: red">${classMsg!}</span>
+							</li>
+							<li>
+								<label style="width: 130px">已有班级(不能为空) </label>
+								<input style="border-style:none;width: 700px;" readonly="true"  name="classes" value="${alreadyClasses!}"/>
+							</li>
+							<li>
+								<label >移除学生 </label>
+								<input id="exportStudent" name="exportStudent" />
+								<input type="button" value="增加" onclick="editStudentExports(0)" />
+								<input type="button" value="删除" onclick="editStudentExports(1)" />
+								<span class="helptext">输入学生学号</span>
+								<span STYLE="color: red">${exportsMsg!}</span>
+							</li>
+							<li>
+								<label >已移除学生 </label>
+								<input style="border-style:none;width: 700px;" readonly="true"  name="alreadyExports" value="${alreadyExports!}"/>
+							</li>
+							<li>
+								<label >额外学生 </label>
+								<input id="containsStudent" name="containsStudent" />
+								<input type="button" value="增加" onclick="editStudentContains(0)" />
+								<input type="button" value="删除" onclick="editStudentContains(1)" />
+								<span class="helptext">输入学生学号</span>
+								<span STYLE="color: red">${containsMsg!}</span>
+							</li>
+							<li>
+								<label >已额外学生 </label>
+								<input style="border-style:none;width: 700px;" readonly="true"  name="alreadyContains" value="${alreadyContains!}"/>
+							</li>
+							<li>
+								<label>状态 </label>
+								<select name="state">
+									<option value="0" <#if entity.state??&&entity.state == 0>selected="selected" </#if> >正常</option>
+									<option value="1" <#if entity.state??&&entity.state == 1>selected="selected" </#if> >封禁</option>
+								</select>
+							</li>
+						</ul>
+
+						<div style="margin-left:75px;margin-top: 20px;">
+							<input class="btn" type="submit" value="保 存"/>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="clearfloat"></div>
+		</div>
+
+		<#include "../common/footer.html">
+
+	</body>
+
+</html>

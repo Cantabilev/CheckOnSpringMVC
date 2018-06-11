@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<#include "../common/res.html">
+		<script type="text/javascript" >
+            function check() {
+                var startOneTime=document.getElementsByName("semesterOneStart");
+                var endOneTime=document.getElementsByName("semesterOneEnd");
+
+                var startTwoTime=document.getElementsByName("semesterTwoStart");
+                var endTwoTime=document.getElementsByName("semesterTwoEnd");
+
+                var name=document.getElementsByName("name");
+                if(startOneTime[0].value!="" & endOneTime[0].value!=""){
+                    if(startOneTime[0].value>endOneTime[0].value){
+                        alert("一：学期开始时间不能大于学期结束时间");
+                        return false;
+                    }
+                }
+                if(startTwoTime[0].value!="" & endTwoTime[0].value!=""){
+                    if(startTwoTime[0].value>endTwoTime[0].value){
+                        alert("二：学期开始时间不能大于学期结束时间");
+                        return false;
+                    }
+                }
+                if(name[0].value!="") {
+                    return true;
+                }
+                return false;
+            }
+		</script>
+	</head>
+
+	<body class="bg">
+
+		<div class="content">
+			<div class="block-nav">
+				<#include "../common/nav.html">
+			</div>
+			<div class="block-content" >
+
+				<div class="block-content-nav">
+					<span class="title">学年信息 添加/修改</span>
+				</div>
+
+				<div class="block-content-description">
+					<span>
+						学年信息编辑
+					</span>
+				</div>
+				<div class="block-content-content">
+					<form class="fm-form" onsubmit="return check();" action="${s.base}/academicYear/doMerge.html" method="post" enctype="multipart/form-data">
+						<input type="hidden" name="id" value="${entity.id!}"/>
+						<ul id="academicYearUl">
+							<li>
+								<label style="width: 100px">名称 </label>
+								<input name="name" type="text" value="${entity.name!}"/>
+								<span class="helptext">名称 例如：2018-2019 且不能为空</span>
+							</li>
+							<li>
+								<label style="width: 100px">一学期开始 </label>
+								<input id="oneStartTime"  name="semesterOneStartStr" value="${entity.semesterOneStartStr!}"  placeholder="请输入日期" class="laydate-icon" onclick="laydate()" readonly>
+							</li>
+							<li>
+								<label style="width: 100px">一学期结束 </label>
+								<input id="oneEndTime"  name="semesterOneEndStr" value="${entity.semesterOneEndStr!}"  placeholder="请输入日期" class="laydate-icon" onclick="laydate()" readonly>
+							</li>
+							<li>
+								<label style="width: 100px">二学期开始 </label>
+								<input id="twoStartTime"  name="semesterTwoStartStr" value="${entity.semesterTwoStartStr!}"  placeholder="请输入日期" class="laydate-icon" onclick="laydate()" readonly>
+							</li>
+							<li>
+								<label style="width: 100px">二学期结束 </label>
+								<input id="twoEndTime"  name="semesterTwoEndStr" value="${entity.semesterTwoEndStr!}"  placeholder="请输入日期" class="laydate-icon" onclick="laydate()" readonly>
+							</li>
+						</ul>
+
+						<div style="margin-left:100px;margin-top: 20px;">
+							<input class="btn" type="submit" value="保 存"/>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="clearfloat"></div>
+		</div>
+
+		<#include "../common/footer.html">
+
+	</body>
+
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<#include "../common/res.html">
+		<script type="text/javascript" >
+            $(function () {
+                var itemsGradeId = document.getElementById("gradeId").options;
+                if (itemsGradeId.length <= 1) {
+                    $.ajax({
+                        type: "get",
+                        url: "${s.base}/grade/getAllGrade.do",
+                        success: function (data) {
+                            for (var i = 0; i < data.data.length; i++) {
+                                $('#gradeId').append("<option value='" + data.data[i].id + "' >" + data.data[i].name + "</option>");
+                            }
+                        },
+                        error: function () {
+                            alert("加载年级失败");
+                        }
+                    });
+                }
+                var itemsAcademyId = document.getElementById("academyId").options;
+                if (itemsAcademyId.length <= 1){
+                    $.ajax({
+                        type: "get",
+                        url: "${s.base}/academy/getAllAcademy.do",
+                        success: function (data) {
+                            for (var i = 0; i < data.data.length; i++) {
+                                $('#academyId').append("<option value='" + data.data[i].id + "' >" + data.data[i].name + "</option>");
+                            }
+                        },
+                        error: function () {
+                            alert("加载学院失败");
+                        }
+                    });
+				}
+
+            });
+                
+			function getSpecialty() {
+                var id = $("#academyId").val();
+                $("#specialtyId").empty();
+                $("#classId").empty();
+                $.ajax({
+                    type: "get",
+                    url: "${s.base}/specialty/getSpecialtyByAcademyId.do",
+                    data: {"academyId": id},
+                    success: function (data) {
+                        $('#specialtyId').append("<option value='' selected='selected' >" + '--&nbsp;专业&nbsp;--' + "</option>");
+                        $('#classId').append("<option value='' selected='selected' >" + '--&nbsp;班级&nbsp;--' + "</option>");
+                        for (var i = 0; i < data.data.length; i++) {
+                            $('#specialtyId').append("<option value='" + data.data[i].id + "' >" + data.data[i].name + "&nbsp;&#47;&nbsp;" +data.data[i].specialtyCode + "</option>");
+                        }
+                    },
+                    error: function () {
+                        alert("加载专业失败");
+                    }
+                });
+            }
+            
+            function getClass() {
+			    var gradeId = $("#gradeId").val();
+                var specialtyId = $("#specialtyId").val();
+                if (null == gradeId || gradeId == ""){
+                    alert("请先选择年级");
+                    return;
+				}
+                $("#classId").empty();
+                $.ajax({
+                    type: "get",
+                    url: "${s.base}/class/getClassByGradeIdAndSpecialtyId.do",
+                    data: {"gradeId":gradeId, "specialtyId": specialtyId},
+                    success: function (data) {
+                        $('#classId').append("<option value='' selected='selected' >" + '--&nbsp;班级&nbsp;--' + "</option>");
+                        for (var i = 0; i < data.data.length; i++) {
+                            $('#classId').append("<option value='" + data.data[i].id + "' >" + data.data[i].name + "&nbsp;&#47;&nbsp;" +data.data[i].classCode + "</option>");
+                        }
+                    },
+                    error: function () {
+                        alert("加载班级失败");
+                    }
+                });
+            }
+
+            function check() {
+                var password=document.getElementById("password");
+                var name=document.getElementById("name");
+                var gradeId=document.getElementById("gradeId");
+                var academyId=document.getElementById("academyId");
+                var specialtyId=document.getElementById("specialtyId");
+                var classIds=document.getElementById("classIds");
+
+                if (password.value == "") {
+                    alert("密码不符规则");
+                    return false;
+                }
+                if (name.value == "" || name.value.length > 10) {
+                    alert("姓名不符规则");
+                    return false;
+                }
+                if (gradeId.value == "") {
+                    alert("年级不符规则");
+                    return false;
+                }
+                if (academyId.value == "") {
+                    alert("学院不符规则");
+                    return false;
+                }
+                if (specialtyId.value == "") {
+                    alert("专业不符规则");
+                    return false;
+                }
+                if (classIds.value == "") {
+                    alert("班级不符规则");
+                    return false;
+                }
+                return true;
+            }
+		</script>
+	</head>
+
+	<body class="bg">
+
+		<div class="content">
+			<div class="block-nav">
+				<#include "../common/nav.html">
+			</div>
+			<div class="block-content" >
+
+				<div class="block-content-nav">
+					<span class="title">学生信息 添加/修改</span>
+				</div>
+
+				<div class="block-content-description">
+					<span>
+						学生信息编辑
+					</span>
+				</div>
+				<div class="block-content-content">
+					<form class="fm-form" onsubmit="return check();" action="${s.base}/student/doMerge.html" method="post" enctype="multipart/form-data">
+						<input type="hidden" name="id" value="${entity.id!}"/>
+						<ul id="teacherUl">
+							<li>
+								<label>账户 </label>
+								<input id="account" name="account" type="text" value="${entity.account!}" readonly="readonly"/>
+							</li>
+							<li>
+								<label>密码 </label>
+								<input id="password" name="password" maxlength="16" type="password" value="${entity.password!}"/>
+								<span class="helptext">长度 &lt;= 16 字,且不能为空</span>
+							</li>
+							<li>
+								<label>姓名 </label>
+								<input id="name" name="name" type="text" value="${entity.name!}"/>
+								<span class="helptext">长度 &lt;= 10 字,且不能为空</span>
+							</li>
+							<li>
+								<label>所属年级 </label>
+								<select id="gradeId" name="gradeId">
+									<option value=""  >--&nbsp;年级&nbsp;--</option>
+									<#if gradeList??>
+										<#list gradeList as row>
+											<option value="${row.id!}" <#if entity.gradeId??&&entity.gradeId == row.id>selected="selected" </#if>>${row.name!}</option>
+										</#list>
+									</#if>
+								</select>
+							</li>
+							<li>
+								<label>所属学院 </label>
+								<select id="academyId" name="academyId" onchange="getSpecialty();">
+									<option value=""  >--&nbsp;学院&nbsp;--</option>
+									<#if academyList??>
+										<#list academyList as row>
+											<option value="${row.id!}" <#if entity.academyId??&&entity.academyId == row.id>selected="selected" </#if>>${row.name!}</option>
+										</#list>
+									</#if>
+								</select>
+							</li>
+							<li>
+								<label>所属专业 </label>
+								<select id="specialtyId" name="specialtyId" onchange="getClass()">
+									<option value=""  >--&nbsp;专业&nbsp;--</option>
+									<#if specialtyList??>
+										<#list specialtyList as row>
+											<option value="${row.id!}" <#if entity.specialtyId??&&entity.specialtyId == row.id>selected="selected" </#if>>${row.name!}</option>
+										</#list>
+									</#if>
+								</select>
+							</li>
+							<li>
+								<label>所属班级 </label>
+								<select id="classId" name="classId">
+									<option value=""  >--&nbsp;班级&nbsp;--</option>
+									<#if classList??>
+										<#list classList as row>
+											<option value="${row.id!}" <#if entity.classId??&&entity.classId == row.id>selected="selected" </#if>>${row.name!}&nbsp;&#47;&nbsp;${row.classCode!}</option>
+										</#list>
+									</#if>
+								</select>
+							</li>
+							<li>
+								<label>性别 </label>
+								<select name="gender">
+									<option value ="0" <#if entity.gender?? && entity.gender == 0>  selected = "selected" </#if> >男</option>
+									<option value ="1" <#if entity.gender?? &&entity.gender == 1>  selected = "selected" </#if>>女</option>
+									<option value ="2" <#if entity.gender?? &&entity.gender == 2>  selected = "selected" </#if>>未知</option>
+								</select>
+							</li>
+							<li>
+								<label>状态 </label>
+								<select name="state">
+									<option value="0" <#if entity.state??&&entity.state == 0>selected="selected" </#if> >正常</option>
+									<option value="1" <#if entity.state??&&entity.state == 1>selected="selected" </#if> >封禁</option>
+								</select>
+							</li>
+						</ul>
+
+						<div style="margin-left:75px;margin-top: 20px;">
+							<input class="btn" type="submit" value="保 存"/>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="clearfloat"></div>
+		</div>
+
+		<#include "../common/footer.html">
+
+	</body>
+
+</html>

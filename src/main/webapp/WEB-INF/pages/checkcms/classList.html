@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<#include "../common/res.html">
+			<script type="text/javascript" >
+                function updateStatus() {
+                    alert("不允许操作");
+                }
+			</script>
+	</head>
+
+	<body class="bg">
+		<#include "../common/top.html">
+
+		<div class="content">
+			<div class="block-nav">
+				<#include "../common/nav.html">
+			</div>
+
+			<div class="block-content" >
+
+				<div class="block-content-nav">
+					<span class="title">班级管理</span>
+				</div>
+
+				<div class="block-content-description">
+					<span>
+						班级管理
+					</span>
+				</div>
+				<form id="queryPageForm" action=""method="post">
+					<div class="block-content-content" style="margin:  0px 0px 0px 30px;">
+						<table>
+						<tr><td>班级代码：</td><td><input value="${classCode!}" name="classCode"type="text"/></td>
+							<td>专业代码：</td><td><input value="${specialtyCode!}" name="specialtyCode"type="text"/></td>
+							<td>所属学院：</td><td><select name="academyId">
+                            <option value=""  >所有</option>
+								<#if academyList??>
+                                    <#list academyList as row>
+                                        <option value="${row.id!}" <#if academyId??&&academyId == row.id>selected="selected" </#if>>${row.name!}</option>
+                                    </#list>
+								</#if>
+						</select></td></tr>
+							<tr><td></td><td></td>  <td></td> <td></td><td></td><td align='right'><button onclick="resetPageNum()">查询</button>
+						<a href="javascript:location.href='${s.base}/class/getPageList.html'">重置查询</a></td></tr>
+							</table>
+					</div>
+				<div class="block-content-content">
+					<table class="fm-table">
+						<thead>
+							<tr>
+								<td>ID</td>
+								<td>年级</td>
+								<td>班级名称</td>
+								<td>班级代码</td>
+								<td>专业代码</td>
+								<td>所属学院</td>
+								<td style="width: 250px;">
+										<input onclick="window.location.href='${s.base}/class/toMerge.html'" class="btn" type="button" value="添 加"/>
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+						<#if pagination.items??>
+							<#list pagination.items as row>
+								<#if row_index %2 == 0>
+									<tr style="height:40px;">
+										<#else>
+									<tr style="height:40px;background-color:#f9f9f9;">
+								</#if>
+								<td >
+									${row.id!}
+								</td>
+								<td >&nbsp;${row.gradeId!}级&nbsp;</td>
+								<td >${row.specialtyName!} - ${row.name!}</td>
+								<td >${row.classCode!}</td>
+								<td >${row.specialtyCode!}</td>
+
+								<td>${row.academyName!}</td>
+
+								<td>
+									<!--<a href="${s.base}/class/toMerge.html?id=${row.id}">修改</a>&nbsp;&nbsp;-->
+									<a onclick="updateStatus()">修改</a>&nbsp;&nbsp;
+								</td>
+								</tr>
+							</#list>
+						</#if>
+						</tbody>
+					</table>
+					<#include "../common/pagination.html">
+				</div>
+				</form>
+			</div>
+
+			<div class="clearfloat"></div>
+		</div>
+
+		<#include "../common/footer.html">
+	</body>
+
+</html>

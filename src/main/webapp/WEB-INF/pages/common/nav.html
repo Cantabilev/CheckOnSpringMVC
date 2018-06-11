@@ -1,0 +1,62 @@
+<div style="height:10px;"></div>
+
+<ul class="nav-ul" style="border-bottom: none;">
+    <li>
+        <span class="title">后台管理</span>
+    </li>
+    <li <#if cur_nav?? && cur_nav == 'teacher' > class="cur-nav"</#if> >
+        <a href="${s.base}/teacher/getPageList.html">
+        <span>教师管理</span>
+        </a>
+    </li>
+    <li <#if cur_nav?? && cur_nav == 'student' > class="cur-nav"</#if> >
+        <a href="${s.base}/student/getPageList.html">
+        <span>学生管理</span>
+        </a>
+    </li>
+    <li <#if cur_nav?? && cur_nav == 'academicYear' > class="cur-nav"</#if> >
+    <a href="${s.base}/academicYear/getPageList.html">
+        <span>学年管理</span>
+    </a>
+    </li>
+    <li <#if cur_nav?? && cur_nav == 'academy' > class="cur-nav"</#if> >
+    <a href="${s.base}/academy/getPageList.html">
+        <span>学院管理</span>
+    </a>
+    </li>
+    <li <#if cur_nav?? && cur_nav == 'specialty' > class="cur-nav"</#if> >
+    <a href="${s.base}/specialty/getPageList.html">
+        <span>专业管理</span>
+    </a>
+    </li>
+    <li <#if cur_nav?? && cur_nav == 'class' > class="cur-nav"</#if> >
+    <a href="${s.base}/class/getPageList.html">
+        <span>班级管理</span>
+    </a>
+    </li>
+    <li <#if cur_nav?? && cur_nav == 'course' > class="cur-nav"</#if> >
+    <a href="${s.base}/course/getPageList.html">
+        <span>课程管理</span>
+    </a>
+    </li>
+    <li <#if cur_nav?? && cur_nav == 'courseCode' > class="cur-nav"</#if> >
+    <a href="${s.base}/courseCode/getPageList.html">
+        <span>课程代码</span>
+    </a>
+    </li>
+    <li <#if cur_nav?? && cur_nav == 'courseDtl' > class="cur-nav"</#if> >
+    <a href="${s.base}/courseDtl/getPageList.html">
+        <span>课程调度</span>
+    </a>
+    </li>
+    <li <#if cur_nav?? && cur_nav == 'clocking' > class="cur-nav"</#if> >
+        <a href="${s.base}/clocking/getPageList.html">
+        <span>考勤管理</span>
+        </a>
+    </li>
+    <li <#if cur_nav?? && cur_nav == 'clockingDtl' > class="cur-nav"</#if> >
+        <a href="${s.base}/clockingDtl/getPageList.html">
+        <span>考勤详细</span>
+        </a>
+    </li>
+</ul>

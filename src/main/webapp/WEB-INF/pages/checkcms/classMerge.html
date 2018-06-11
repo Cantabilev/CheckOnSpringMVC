@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<#include "../common/res.html">
+		<script type="text/javascript" >
+            function check() {
+                var name=document.getElementById("name");
+                var specialtyId=document.getElementById("specialtyId");
+                var classCode=document.getElementById("classCode");
+                var gradeId=document.getElementById("gradeId");
+                if (name.value == "" || name.value.length > 2) {
+                    alert("班级名称不符规则");
+                    return false;
+                }
+                if (specialtyId.value == "") {
+                    alert("专业不符规则");
+                    return false;
+                }
+                if (classCode.value == "" || classCode.value.length>2) {
+                    alert("班级代码不符规则");
+                    return false;
+                }
+                if (gradeId.value == "") {
+                    alert("年级不符规则");
+                    return false;
+                }
+                return true;
+            }
+		</script>
+	</head>
+
+	<body class="bg">
+
+		<div class="content">
+			<div class="block-nav">
+				<#include "../common/nav.html">
+			</div>
+			<div class="block-content" >
+
+				<div class="block-content-nav">
+					<span class="title">班级信息 添加</span>
+				</div>
+
+				<div class="block-content-description">
+					<span>
+						班级信息编辑
+					</span>
+				</div>
+				<div class="block-content-content">
+					<form class="fm-form" onsubmit="return check();" action="${s.base}/class/doMerge.html" method="post" enctype="multipart/form-data">
+						<input type="hidden" name="id" value="${entity.id!}"/>
+						<ul id="specialtyUl">
+							<li>
+								<label>所属年级 </label>
+								<select id="gradeId" name="gradeId">
+									<option value=""  >----</option>
+									<#if gradeList??>
+										<#list gradeList as row>
+											<option value="${row.id!}" <#if entity.gradeId??&&entity.gradeId == row.id>selected="selected" </#if>>${row.name!}</option>
+										</#list>
+									</#if>
+								</select>
+							</li>
+							<li>
+								<label>所属专业 </label>
+								<select id="specialtyId" name="specialtyId">
+									<option value=""  >----</option>
+									<#if specialtyList??>
+										<#list specialtyList as row>
+											<option value="${row.id!}" <#if entity.specialtyId??&&entity.specialtyId == row.id>selected="selected" </#if>>${row.name!}</option>
+										</#list>
+									</#if>
+								</select>
+							</li>
+							<li>
+								<label>班级名称 </label>
+								<input id="name" name="name" type="text" value="${entity.name!}"/>
+								<span class="helptext">长度 &lt;= 2 字,且不能为空 例如：一班，二班，三班</span>
+							</li>
+							<li>
+								<label>班级代码 </label>
+								<input id="classCode" name="classCode" type="text" value="${entity.classCode!}"/>
+								<span class="helptext">长度 &lt;= 2 字,且不能为空 例如：01，02，03 成功添加后将会组合 </span>
+							</li>
+						</ul>
+
+						<div style="margin-left:75px;margin-top: 20px;">
+							<input class="btn" type="submit" value="保 存"/>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="clearfloat"></div>
+		</div>
+
+		<#include "../common/footer.html">
+
+	</body>
+
+</html>
